@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraStudy - AI Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0f3ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+  </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+
+  <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-700">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-brand-600 dark:text-brand-500">AuraStudy 🕊️</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Your All-in-One AI Study Workspace</p>
+      </div>
+      <form id="auth-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Your Name</label>
+          <input type="text" id="user-name-input" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Gemini API Key</label>
+          <input type="password" id="api-key-input" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+          <p class="text-[11px] text-slate-400 mt-1">Stored safely in local storage.</p>
+        </div>
+        <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl shadow-lg shadow-brand-500/30 transition">Get Started</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="app" class="hidden h-full flex flex-col md:flex-row overflow-hidden">
+    
+    <aside class="w-full md:w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700/60 flex flex-col justify-between shrink-0">
+      <div>
+        <div class="p-6 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-brand-600 dark:text-brand-500 flex items-center gap-2">AuraStudy 🕊️</h2>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs">🌙/☀️</button>
+        </div>
+
+        <nav class="px-4 space-y-1">
+          <button class="nav-btn active w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-500" data-view="dashboard">🏠 Dashboard</button>
+          <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition" data-view="planner">📅 Study Planner</button>
+          <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition" data-view="tools">📚 AI Tools List</button>
+          <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition" data-view="assistant">🤖 AI Assistant</button>
+          <button class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition" data-view="quizzes">🧪 Quiz Generator</button>
+        </nav>
+      </div>
+
+      <div class="p-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between">
+        <div>
+          <p id="display-user" class="font-semibold text-sm">Student</p>
+          <p id="streak-count" class="text-xs text-orange-500 font-medium">🔥 1 Day Streak</p>
+        </div>
+        <button id="reset-btn" class="text-xs text-red-500 hover:underline">Reset</button>
+      </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8">
+
+      <section id="view-dashboard" class="view-content space-y-6">
+        <div>
+          <h1 class="text-2xl font-bold">Welcome back, <span id="dash-user">Student</span> 👋</h1>
+          <p class="text-slate-500 text-sm">Here is your daily study focus and task metrics.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+            <span class="text-slate-400 text-xs font-semibold uppercase">Total Time Spent</span>
+            <p id="total-time-display" class="text-2xl font-bold text-brand-600 mt-1">0m</p>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+            <span class="text-slate-400 text-xs font-semibold uppercase">Tasks Completed</span>
+            <p id="completed-count-display" class="text-2xl font-bold text-emerald-500 mt-1">0/0</p>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+            <span class="text-slate-400 text-xs font-semibold uppercase">Weak Topics Identified</span>
+            <p id="weak-count-display" class="text-2xl font-bold text-amber-500 mt-1">None logged</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 class="text-lg font-bold">Focus Pomodoro</h3>
+            <p class="text-xs text-slate-500">Run timed focus blocks to log study session hours.</p>
+          </div>
+          <div class="text-4xl font-extrabold tracking-tight font-mono" id="timer-display">25:00</div>
+          <div class="flex gap-2">
+            <button id="timer-start" class="px-5 py-2.5 bg-brand-600 text-white text-sm font-semibold rounded-xl">Start</button>
+            <button id="timer-reset" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 text-sm font-semibold rounded-xl">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-planner" class="view-content hidden space-y-6">
+        <h1 class="text-2xl font-bold">Study Planner & Schedule</h1>
+        
+        <form id="add-task-form" class="flex gap-3">
+          <input type="text" id="task-title" placeholder="Task title (e.g., Read Physics Ch 4)..." required class="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none">
+          <button type="submit" class="px-6 py-3 bg-brand-600 text-white text-sm font-medium rounded-xl">Add Task</button>
+        </form>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6">
+          <h3 class="font-bold mb-4">Pending Agenda</h3>
+          <div id="planner-tasks-list" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <section id="view-tools" class="view-content hidden space-y-6">
+        <h1 class="text-2xl font-bold">AI Learning Tools</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="tool-card bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 cursor-pointer hover:border-brand-500 transition" data-prompt="Please summarize the key points of the following notes in bullet points: ">
+            <h3 class="font-bold text-brand-600 dark:text-brand-400">⚡ Summarizer</h3>
+            <p class="text-xs text-slate-500 mt-1">Convert long study material into quick summaries.</p>
+          </div>
+          <div class="tool-card bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 cursor-pointer hover:border-brand-500 transition" data-prompt="Provide a structured essay outline with a thesis and bullet points for topic: ">
+            <h3 class="font-bold text-brand-600 dark:text-brand-400">✍️ Essay Outliner</h3>
+            <p class="text-xs text-slate-500 mt-1">Generate comprehensive structural outlines for essays.</p>
+          </div>
+          <div class="tool-card bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 cursor-pointer hover:border-brand-500 transition" data-prompt="Explain this complex topic in simple terms with an example: ">
+            <h3 class="font-bold text-brand-600 dark:text-brand-400">💡 Complex Concept Explainer</h3>
+            <p class="text-xs text-slate-500 mt-1">Break down difficult mechanics using simple language.</p>
+          </div>
+          <div class="tool-card bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 cursor-pointer hover:border-brand-500 transition" data-prompt="Generate 5 flashcard questions and answers for studying: ">
+            <h3 class="font-bold text-brand-600 dark:text-brand-400">🎴 Flashcard Generator</h3>
+            <p class="text-xs text-slate-500 mt-1">Instantly build active recall flashcard pairs.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-assistant" class="view-content hidden h-full flex flex-col">
+        <h1 class="text-2xl font-bold mb-4">AI Study Assistant</h1>
+        <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6 flex flex-col min-h-[450px]">
+          <div id="chat-box" class="flex-1 overflow-y-auto custom-scrollbar space-y-4 mb-4 pr-2"></div>
+          <form id="chat-form" class="flex gap-2">
+            <input type="text" id="chat-input" placeholder="Ask any question..." required class="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none">
+            <button type="submit" class="px-6 py-3 bg-brand-600 text-white font-medium text-sm rounded-xl">Send</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-quizzes" class="view-content hidden space-y-6">
+        <h1 class="text-2xl font-bold">Interactive Quiz Generator</h1>
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 space-y-4">
+          <form id="quiz-gen-form" class="flex gap-3">
+            <input type="text" id="quiz-topic" placeholder="Enter topic (e.g., Organic Chemistry)..." required class="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-sm outline-none">
+            <button type="submit" class="px-6 py-3 bg-brand-600 text-white font-medium text-sm rounded-xl">Generate Quiz</button>
+          </form>
+          <div id="quiz-container" class="space-y-4 mt-6"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
