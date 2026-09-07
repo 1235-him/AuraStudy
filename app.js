@@ -57,11 +57,11 @@ authForm.addEventListener('submit', (e) => {
   init();
 });
 
-document.querySelector('.reset-btn').addEventListener('click', () => {
+document.querySelectorAll('.reset-btn').forEach(resetButton => resetButton.addEventListener('click', () => {
   clearInterval(timerInterval);
   localStorage.removeItem(USER_KEY);
   location.reload();
-});
+}));
 
 function profileId(name) {
   return encodeURIComponent(name.trim().toLowerCase());
