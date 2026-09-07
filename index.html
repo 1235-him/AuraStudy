@@ -36,7 +36,7 @@
     <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-700">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold text-brand-600 dark:text-brand-500">AuraStudy 🕊️</h1>
-        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Your All-in-One AI Study Workspace</p>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Your education and life-skills workspace</p>
       </div>
       <form id="auth-form" class="space-y-4">
         <div>
@@ -234,7 +234,7 @@
         <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6 flex flex-col min-h-[450px]">
           <div id="chat-box" class="flex-1 overflow-y-auto custom-scrollbar space-y-4 mb-4 pr-2"></div>
           <form id="chat-form" class="flex gap-2">
-            <input type="text" id="chat-input" placeholder="Ask any question in the world..." required class="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none">
+            <input type="text" id="chat-input" placeholder="Ask about learning or life skills..." required class="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm outline-none">
             <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm rounded-xl transition">Send</button>
           </form>
         </div>
@@ -243,8 +243,13 @@
       <section id="view-quizzes" class="view-content hidden space-y-6">
         <h1 class="text-2xl font-bold">Quiz Generator</h1>
         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 space-y-4">
-          <form id="quiz-gen-form" class="flex gap-3">
+          <form id="quiz-gen-form" class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3">
             <input type="text" id="quiz-topic" placeholder="Enter topic (e.g., Quantum Physics)..." required class="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-sm outline-none">
+            <select id="quiz-level" class="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-sm outline-none" aria-label="Quiz difficulty">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
             <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm rounded-xl transition">Generate Quiz</button>
           </form>
           <div id="quiz-container" class="space-y-4 mt-6"></div>
